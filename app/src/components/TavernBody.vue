@@ -8,7 +8,7 @@
       <span class="tavern-text" v-if="soldBeer">{{soldBeer}} sold</span>
     </div>
     <button class="tavern-button sell-beer-button" v-on:click="sellBeer">Pour a beer</button>
-    <button class="tavern-button hire-button" v-if="coins > tmaidPrice" v-on:click="hire('tmaid')">Hire a tavern maid (Cost {{tmaidPrice}}) to help run the business</button>
+    <button class="tavern-button hire-button" v-if="coins > tmaidPrice" v-on:click="hire('tmaid')">Hire a tavern maid (Costs {{tmaidPrice}}) to help run the business</button>
     <div class="tavern-stats">
         <span class="tavern-text" v-if="coins">{{coins}} coins in your chest</span>
         <span class="tavern-text" v-if="tmaid">{{tmaid}} tavern maidens in your tavern</span>
