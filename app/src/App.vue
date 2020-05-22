@@ -2,12 +2,17 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <span class="tavern-visual">
-      <pre>
-                            (   )
-                          (    )
-                           (    )
-                          (    )
-                            )  )
+      <pre class="smoke-left">
+          (   )</pre>
+      <pre class="smoke-right">
+      (   )</pre>
+      <pre class="smoke-left">
+    (  )</pre>
+      <pre class="smoke-right">
+  (  (</pre>
+      <pre class="smoke-left">
+  )  )</pre>
+    <pre>
                            (  (                  /\
                             (_)                 /  \  /\
                     ________[_]________      /\/    \/  \
@@ -24,7 +29,6 @@
             ~~~~~"   "~~~~~~~~~~~~~~~~~~~~~~~~  
 
      ------------------------------------------------
-
       </pre>
     </span>
     <TavernBody/>
@@ -57,11 +61,46 @@ body {
   height: 100vh;
   .tavern-visual {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;  
   }
   pre {
+    display: inline-block;
+    text-align: left;
     color: white;
-    text-align: initial;
+    margin: 0;
+    &.smoke-left {
+      animation-name: smoke-left;
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+      animation-timing-function: linear;
+    }
+    &.smoke-right {
+            animation-name: smoke-right;
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+        animation-direction: alternate;
+        animation-timing-function: linear;
+
+    }
+
+  }
+  @keyframes smoke-left {
+    0% {
+      margin-left: 0px;
+    }
+    100% {
+      margin-left: 10px;
+    }
+  }
+  @keyframes smoke-right {
+    0% {
+      margin-right: 0px;
+    }
+    100% {
+      margin-right: 10px;
+    }
   }
 }
 </style>

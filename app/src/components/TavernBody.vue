@@ -1,72 +1,131 @@
 <template>
   <div class="tavern-container container">
-    <!-- <div class="counter" v-text="this.test()"></div> -->
     <div class="text-container">
-      <span class="tavern-text">
-          The nights are long and cold. You take in familiar and stranger alike, and pour them one for the dark nights
-          </span>
-      <span class="tavern-text" v-if="soldBeer">{{soldBeer}} sold</span>
+      <span
+        class="tavern-text"
+      >The nights are long and cold. You take in familiar and stranger alike, and pour them one for the dark nights</span>
     </div>
-    <button class="tavern-button sell-beer-button" v-on:click="sellBeer">Pour a beer</button>
-    <button class="tavern-button hire-button" v-if="coins > tmaidPrice" v-on:click="hire('tmaid')">Hire a tavern maid (Costs {{tmaidPrice}}) to help run the business</button>
-    <div class="tavern-stats">
-        <span class="tavern-text" v-if="coins">{{coins}} coins in your chest</span>
-        <span class="tavern-text" v-if="tmaid">{{tmaid}} tavern maidens in your tavern</span>
+    <div class="tavern-buttons">
+      <button
+        class="tavern-button sell-beer-button"
+        v-on:click="sellBeer"
+      >Pour a beer (Pays {{beerPrice}})</button>
+      <div class="tavern-stats">
+        <span class="tavern-text" >{{coins}} coins in your chest</span>
+        <span class="tavern-text" >{{soldBeer}} beers sold</span>
+      </div>
+      <transition name="fade">
+        <purchaseButton
+          :buttonData="tmaidData"
+          v-if="coins >= 5 | tmaidData.count > 0"
+          :coins="coins"
+          name="Tavern Maiden"
+          title="A young maiden from a nearby town asks if you need help in the tavern."
+          v-on:purchased="buy(tmaidData)"
+        ></purchaseButton>
+      </transition>
+
+      <transition name="fade">
+        <purchaseButton
+          :buttonData="brewerData"
+          v-if="tmaidData.count > 0"
+          :coins="coins"
+          name="Brewer"
+          title="A weary traveller offers to teach his peoples ways of brewing and aid you in making your own fine beer."
+          v-on:purchased="buy(brewerData)"
+        ></purchaseButton>
+      </transition>
     </div>
+    <!-- <div class="tavern-stats">
+      <span class="tavern-text" v-if="coins">{{coins}} coins in your chest</span>
+      <span class="tavern-text" v-if="tmaid">{{tmaid}} tavern maidens in your tavern</span>
+    </div> -->
   </div>
 </template>
 
 <script>
-// import TEngine from "@/engine/tEngine.js";
-// const TavEng = new TEngine();
-const dev = true;
+// import Brewery from '../components/items/Brewery.vue'
+import PurchaseButton from "../components/PurchaseButton.vue";
+const dev = false;
 
-const pricesAndTicks = {
-    tmaidPrice: dev ? 10 : 50,
-    tmaidTicks: dev ? 1000 : 5000,
-
-}
+let pricesAndTicks = {
+  beerCost: 1,
+  tmaidPrice: dev ? 10 : 30,
+  tmaidTicks: dev ? 1000 : 3000,
+  brewerPrice: dev ? 10 : 50
+};
 
 console.log(pricesAndTicks);
 export default {
   name: "TavernBody",
+  components: {
+    // Brewery,
+    PurchaseButton
+  },
   data() {
     return {
       soldBeer: 0,
+      beerPrice: pricesAndTicks.beerCost,
       coins: 0,
-      tmaid: 0,
-      tmaidPrice: pricesAndTicks.tmaidPrice
+      tmaidData: {
+        price: pricesAndTicks.tmaidPrice,
+        count: 0,
+        name: "tmaid"
+      },
+      brewerData: {
+        price: pricesAndTicks.brewerPrice,
+        count: 0,
+        name: "brewer"
+      }
     };
   },
   methods: {
+    test() {
+      console.log("test method");
+    },
+    // beerPrices() {
+    //   console.log('jaaa',this.beerPrice )
+    //   this.beerPrice += 1
+    // },
     sellBeer() {
-        let beerCost = 1;
-        console.log(beerCost)
-        this.coinCounter(beerCost);
-        // return this.soldBeer++ * (1 + this.tmaid);
-        return this.soldBeer++;
+      let costs = this.beerPrice;
+      this.coinCounter(costs);
+      return this.soldBeer++;
     },
     coinCounter(costs) {
-        return this.coins += costs;
+      return (this.coins += costs);
     },
-    hire(worker) {
-        console.log(this.tmaid)
-        if (worker === 'tmaid') {
-            this.coinCounter(-this.tmaidPrice);
-            setInterval(this.gameLoop, pricesAndTicks.tmaidTicks);
-            return this.tmaid++
-        }
+    buy(item) {
+      console.log(item.name);
+      item.count++;
+      item.price += item.count * 2
+      this.coinCounter(-item.price)
+      console.log(item.count)
+      switch (item.name) {
+        case "tmaid":
+          setInterval(this.gameLoop, pricesAndTicks.tmaidTicks);
+          break;
+        case "brewer":
+          this.beerPrice++;
+          break;
+        default:
+        // code block
+      }
     },
-    gameLoop () {
-        this.sellBeer()
+    gameLoop() {
+      this.sellBeer();
     }
   },
-  mounted () {
-  },
+  mounted() {}
 };
 </script>
 
-<style scoped lang=scss>
+<style lang=scss>
+@mixin flexBoxStd {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .tavern-container {
   display: flex;
   justify-content: center;
@@ -77,18 +136,42 @@ export default {
     /* margin-top: 10px; */
   }
   .text-container {
-      display: flex;
-      flex-direction: column;
-      margin: 20px 80px; 
-
-      .tavern-text {
-          color: white;
-          margin: 20px;
-      }
-    }
-    .tavern-stats {
-        display: flex;
+    display: flex;
     flex-direction: column;
+    margin: 20px 80px;
+
+    .tavern-text {
+      color: white;
+      margin: 20px;
     }
+  }
+  .tavern-stats {
+    display: flex;
+    flex-direction: column;
+  }
+  .tavern-buttons {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    button {
+      margin: 5px;
+      padding: 5px;
+      font-size: 13px;
+      font-family: monospace;
+      background: lightgrey;
+    }
+    .button-description {
+      @include flexBoxStd;
+      margin: 10px;
+    }
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
 }
 </style>
