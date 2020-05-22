@@ -46,7 +46,7 @@
 <script>
 // import Brewery from '../components/items/Brewery.vue'
 import PurchaseButton from "../components/PurchaseButton.vue";
-const dev = true;
+const dev = false;
 
 let pricesAndTicks = {
   beerCost: 1,
@@ -99,7 +99,7 @@ export default {
       console.log(item.name);
       item.count++;
       this.coinCounter(-item.price);
-      item.price += Math.round(item.price * 0.8 * item.count);
+      item.price += Math.round(item.price * 0.2 * item.count);
       console.log(item.count);
       switch (item.name) {
         case "tmaid":
@@ -127,17 +127,14 @@ export default {
   align-items: center;
 }
 .tavern-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+
   color: white;
   .sell-beer-button {
     /* margin-top: 10px; */
   }
   .text-container {
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
+    flex-direction: column; */
     margin: 20px 80px;
 
     .tavern-text {
@@ -151,9 +148,6 @@ export default {
   }
   .tavern-buttons {
     margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     button {
       margin: 5px;
       padding: 5px;
@@ -162,7 +156,7 @@ export default {
       background: lightgrey;
     }
     .button-description {
-      @include flexBoxStd;
+      /* @include flexBoxStd; */
       margin: 10px;
     }
   }

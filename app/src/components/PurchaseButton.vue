@@ -4,7 +4,7 @@
       <div class="button-description">{{title}}</div>
       <button
         class="tavern-button hire-button"
-        :disabled="coins <= buttonData.price"
+        :disabled="coins <= buttonData.price || coins === buttonData.price"
         v-on:click="$emit('purchased')"
       >Costs ({{buttonData.price}} coins)</button>
     </div>
@@ -30,11 +30,13 @@ export default {
 <style  lang=scss>
 .item-container {
   border-bottom: 1px solid;
+  border-color: grey;
+
   padding: 20px;
   .buttoncontainer {
     display: flex;
-    justify-content: center;
-    max-width: 80vw;
+    justify-content: space-between;
+    margin-bottom: 5px;
     button {
       margin: 5px;
       padding: 5px;
@@ -43,6 +45,9 @@ export default {
       background: lightgrey;
       max-width: 50vw;
     }
+  }
+  .tavern-text {
+    font-size: smaller;
   }
 }
 .fade-enter-active,
