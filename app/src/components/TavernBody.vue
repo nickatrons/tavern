@@ -11,8 +11,8 @@
         v-on:click="sellBeer"
       >Pour a beer (Pays {{beerPrice}})</button>
       <div class="tavern-stats">
-        <span class="tavern-text" >{{coins}} coins in your chest</span>
-        <span class="tavern-text" >{{soldBeer}} beers sold</span>
+        <span class="tavern-text">{{coins}} coins in your chest</span>
+        <span class="tavern-text">{{soldBeer}} beers sold</span>
       </div>
       <transition name="fade">
         <purchaseButton
@@ -39,14 +39,14 @@
     <!-- <div class="tavern-stats">
       <span class="tavern-text" v-if="coins">{{coins}} coins in your chest</span>
       <span class="tavern-text" v-if="tmaid">{{tmaid}} tavern maidens in your tavern</span>
-    </div> -->
+    </div>-->
   </div>
 </template>
 
 <script>
 // import Brewery from '../components/items/Brewery.vue'
 import PurchaseButton from "../components/PurchaseButton.vue";
-const dev = false;
+const dev = true;
 
 let pricesAndTicks = {
   beerCost: 1,
@@ -98,9 +98,9 @@ export default {
     buy(item) {
       console.log(item.name);
       item.count++;
-      item.price += item.count * 2
-      this.coinCounter(-item.price)
-      console.log(item.count)
+      this.coinCounter(-item.price);
+      item.price += Math.round(item.price * 0.8 * item.count);
+      console.log(item.count);
       switch (item.name) {
         case "tmaid":
           setInterval(this.gameLoop, pricesAndTicks.tmaidTicks);
