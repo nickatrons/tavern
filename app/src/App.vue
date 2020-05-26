@@ -51,6 +51,9 @@ body {
   height: 100%;
   background: black;
   padding-top: 20px;
+      @media (max-width: 600px) { 
+      font-size: 12px;
+    }
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -76,6 +79,9 @@ body {
     // align-items: center;
   }
   pre {
+    @media (max-width: 600px) { 
+      font-size: 8px;
+    }
     // display: inline-block;
     text-align: left;
     color: white;

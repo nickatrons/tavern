@@ -44,6 +44,9 @@ export default {
       font-family: monospace;
       background: lightgrey;
       max-width: 50vw;
+          @media (max-width: 600px) { 
+      font-size: 11px;
+    }
     }
   }
   .tavern-text {

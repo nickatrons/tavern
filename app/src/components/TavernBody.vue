@@ -120,7 +120,7 @@ export default {
 };
 </script>
 
-<style lang=scss>
+<style scoped lang=scss>
 @mixin flexBoxStd {
   display: flex;
   flex-direction: column;
