@@ -1,46 +1,29 @@
 <template>
   <div id="app">
-    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    <span class="tavern-visual">
-      <pre class="smoke smoke-left">
-          (   )</pre>
-      <pre class="smoke smoke-right">
-      (   )</pre>
-      <pre class="smoke smoke-left">
-    (  )</pre>
-      <pre class="smoke smoke-right">
-  (  (</pre>
-      <pre class="smoke smoke-left">
-  )  )</pre>
-      <pre>
-                           (  (                  /\
-                            (_)                 /  \  /\
-                    ________[_]________      /\/    \/  \
-           /\      /\        ______    \    /   /\/\  /\/\
-          /  \    //_\       \    /\    \  /\/\/    \/    \
-   /\    / /\/\  //___\       \__/  \    \/
-  /  \  /\/    \//_____\       \ |[]|     \
- /\/\/\/       //_______\       \|__|      \
-/      \      /XXXXXXXXXX\                  \
-        \    /_I_II  I__I_\__________________\
-               I_I|  I__I_____[]_|_[]_____I
-               I_II  I__I_____[]_|_[]_____I
-               I II__I  I     XXXXXXX     I
-            ~~~~~"   "~~~~~~~~~~~~~~~~~~~~~~~~  
-     ------------------------------------------------
-      </pre>
-    </span>
-    <TavernBody />
+    <div class="app-navigation">
+      <router-link to="/">Go to your tavern</router-link>
+      <router-link to="/Upgrades">Go to upgrades</router-link>
+
+    </div>
+    <House />
+    <transition name="fade" mode="out-in">
+      <keep-alive>
+        <router-view />
+      </keep-alive>
+    </transition>
+    <Version />
   </div>
 </template>
 
 <script>
-import TavernBody from "./components/TavernBody.vue";
+// import TavernBody from "./components/TavernBody.vue";
+import House from "./components/House.vue";
+import Version from "./components/Version.vue";
 
 export default {
   name: "App",
   components: {
-    TavernBody
+    House, Version
   }
 };
 </script>
@@ -51,9 +34,9 @@ body {
   height: 100%;
   background: black;
   padding-top: 20px;
-      @media (max-width: 600px) { 
-      font-size: 12px;
-    }
+  @media (max-width: 600px) {
+    font-size: 12px;
+  }
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -67,19 +50,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  &>div {
-    flex: 1;
-  }
-  div {
-    // order: 2;
-  }
-  .tavern-visual {
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
+  & > div {
+    &.app-navigation a, &.tavern-text {
+      color: white;
+      margin: 10px;
+    }
   }
   pre {
-    @media (max-width: 600px) { 
+    @media (max-width: 600px) {
       font-size: 8px;
     }
     // display: inline-block;

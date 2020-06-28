@@ -35,6 +35,16 @@
           v-on:purchased="buy(brewerData)"
         ></purchaseButton>
       </transition>
+      <transition name="fade">
+        <purchaseButton
+          :buttonData="bardData"
+          v-if="brewerData.count > 0"
+          :coins="coins"
+          name="Bard"
+          title="The expanding inn attracts a bard from a nearby town. He offers to sing and dance, making your customers even happier"
+          v-on:purchased="buy(bardData)"
+        ></purchaseButton>
+      </transition>
     </div>
     <!-- <div class="tavern-stats">
       <span class="tavern-text" v-if="coins">{{coins}} coins in your chest</span>
@@ -46,13 +56,16 @@
 <script>
 // import Brewery from '../components/items/Brewery.vue'
 import PurchaseButton from "../components/PurchaseButton.vue";
-const dev = false;
+// import EventBus from "../main.js"
+const dev = true;
 
 let pricesAndTicks = {
   beerCost: 1,
   tmaidPrice: dev ? 10 : 30,
   tmaidTicks: dev ? 1000 : 3000,
-  brewerPrice: dev ? 10 : 50
+  brewerPrice: dev ? 10 : 100,
+  bardPrice: dev ? 100 : 500,
+  bardTicks: dev ? 100 : 500
 };
 
 console.log(pricesAndTicks);
@@ -76,6 +89,11 @@ export default {
         price: pricesAndTicks.brewerPrice,
         count: 0,
         name: "brewer"
+      },
+      bardData: {
+        price: pricesAndTicks.bardPrice,
+        count: 0,
+        name: "bard"
       }
     };
   },
@@ -90,16 +108,23 @@ export default {
     sellBeer() {
       let costs = this.beerPrice;
       this.coinCounter(costs);
+            this.emitMethod();
+
       return this.soldBeer++;
     },
     coinCounter(costs) {
-      return (this.coins += costs);
+      this.coins += costs;
+      this.$globalcoins = this.coins;
+      this.$store.commit('incrementCoins');
+      
+      console.log(this.$store.state.coins)
+      // return (this.coins += costs);
     },
     buy(item) {
       console.log(item.name);
       item.count++;
       this.coinCounter(-item.price);
-      item.price += Math.round(item.price * 0.2 * item.count);
+      item.price += Math.round(item.price * 1.15);
       console.log(item.count);
       switch (item.name) {
         case "tmaid":
@@ -108,12 +133,19 @@ export default {
         case "brewer":
           this.beerPrice++;
           break;
+        case "bard":
+          setInterval(this.gameLoop, pricesAndTicks.bardTicks);
+
+            break;
         default:
         // code block
       }
     },
     gameLoop() {
       this.sellBeer();
+    }, 
+    emitMethod () {
+      //  EventBus.$emit('COINS', this.coins);
     }
   },
   mounted() {}
