@@ -15,6 +15,6 @@ export default class SaveEng {
 
     getSave() {
         let savedItem = localStorage.getItem(this.LOCALSTORAGENAME);
-        return savedItem;
+        return JSON.parse(savedItem);
     }
 }

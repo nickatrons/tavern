@@ -9,40 +9,40 @@
       <button
         class="tavern-button sell-beer-button"
         v-on:click="sellBeer"
-      >Pour a beer (Pays {{beerPrice}})</button>
+      >Pour a beer (Pays {{getState.beerPrice}})</button>
       <div class="tavern-stats">
-        <span class="tavern-text">{{coins}} coins in your chest</span>
-        <span class="tavern-text">{{soldBeer}} beers sold</span>
+        <span class="tavern-text">{{getState.coins}} coins in your chest</span>
+        <span class="tavern-text">{{getState.soldBeer}} beers sold</span>
       </div>
       <transition name="fade">
         <purchaseButton
-          :buttonData="tmaidData"
-          v-if="coins >= 5 | tmaidData.count > 0"
-          :coins="coins"
+          :buttonData="getState.tmaidData"
+          v-if="getState.coins >= 5 | getState.tmaidData.count > 0"
+          :coins="getState.coins"
           name="Tavern Maiden"
           title="A young maiden from a nearby town asks if you need help in the tavern."
-          v-on:purchased="buy(tmaidData)"
+          v-on:purchased="buy(getState.tmaidData)"
         ></purchaseButton>
       </transition>
 
       <transition name="fade">
         <purchaseButton
-          :buttonData="brewerData"
-          v-if="tmaidData.count > 0"
-          :coins="coins"
+          :buttonData="getState.brewerData"
+          v-if="getState.tmaidData.count > 0"
+          :coins="getState.coins"
           name="Brewer"
           title="A weary traveller offers to teach his peoples ways of brewing and aid you in making your own fine beer."
-          v-on:purchased="buy(brewerData)"
+          v-on:purchased="buy(getState.brewerData)"
         ></purchaseButton>
       </transition>
       <transition name="fade">
         <purchaseButton
-          :buttonData="bardData"
-          v-if="brewerData.count > 0"
-          :coins="coins"
+          :buttonData="getState.bardData"
+          v-if="getState.brewerData.count > 0"
+          :coins="getState.coins"
           name="Bard"
           title="The expanding inn attracts a bard from a nearby town. He offers to sing and dance, making your customers even happier"
-          v-on:purchased="buy(bardData)"
+          v-on:purchased="buy(getState.bardData)"
         ></purchaseButton>
       </transition>
     </div>
@@ -56,10 +56,13 @@
 <script>
 // import Brewery from '../components/items/Brewery.vue'
 import PurchaseButton from "../components/PurchaseButton.vue";
+import { mapGetters } from 'vuex'
+
 // import EventBus from "../main.js"
 const dev = true;
 
 let pricesAndTicks = {
+  coins: 0,
   beerCost: 1,
   tmaidPrice: dev ? 10 : 30,
   tmaidTicks: dev ? 1000 : 3000,
@@ -75,28 +78,39 @@ export default {
     // Brewery,
     PurchaseButton
   },
-  data() {
-    return {
-      soldBeer: 0,
-      beerPrice: pricesAndTicks.beerCost,
-      coins: 0,
-      tmaidData: {
-        price: pricesAndTicks.tmaidPrice,
-        count: 0,
-        name: "tmaid"
-      },
-      brewerData: {
-        price: pricesAndTicks.brewerPrice,
-        count: 0,
-        name: "brewer"
-      },
-      bardData: {
-        price: pricesAndTicks.bardPrice,
-        count: 0,
-        name: "bard"
-      }
-    };
+  computed: {
+    storedData() {
+      return this.$store.getters.getState; 
+    },
+    ...mapGetters([
+      'getState',
+            // ...
+    ])
   },
+  // data() {
+  //   // return 
+  //   //   // this.$store.state;
+  //   //   store.getters.doneTodos
+  //     // soldBeer: 0,
+  //     // beerPrice: this.$store.state.beerPrice,
+  //     // coins: this.$store.state.coins,
+  //     // tmaidData: {
+  //     //   price: this.$store.state.tmaidPrice,
+  //     //   count: 0,
+  //     //   name: "tmaid"
+  //     // },
+  //     // brewerData: {
+  //     //   price: pricesAndTicks.brewerPrice,
+  //     //   count: 0,
+  //     //   name: "brewer"
+  //     // },
+  //     // bardData: {
+  //     //   price: pricesAndTicks.bardPrice,
+  //     //   count: 0,
+  //     //   name: "bard"
+  //     // }
+    
+  // },
   methods: {
     test() {
       console.log("test method");
@@ -105,17 +119,19 @@ export default {
     //   console.log('jaaa',this.beerPrice )
     //   this.beerPrice += 1
     // },
-    sellBeer() {
-      let costs = this.beerPrice;
+    sellBeer(costs) {
+      // let costs = this.getState.beerPrice;
       this.coinCounter(costs);
-            this.emitMethod();
+      // this.emitMethod();
+      this.$store.commit('incrementBeers');
+      // this.$store.commit('countCoins');
 
-      return this.soldBeer++;
+      // return this.getState.soldBeer++;
     },
     coinCounter(costs) {
-      this.coins += costs;
-      this.$globalcoins = this.coins;
-      this.$store.commit('incrementCoins');
+      // this.getState.coins += costs;
+      // this.$globalcoins = this.coins;
+      this.$store.commit('countCoins', costs);
       
       console.log(this.$store.state.coins)
       // return (this.coins += costs);
@@ -125,17 +141,18 @@ export default {
       item.count++;
       this.coinCounter(-item.price);
       item.price += Math.round(item.price * 1.15);
+      this.$store.commit('increasePrices', item.name);
+
       console.log(item.count);
       switch (item.name) {
         case "tmaid":
-          setInterval(this.gameLoop, pricesAndTicks.tmaidTicks);
+          setInterval(this.gameLoop, this.getState.tmaidTicks);
           break;
         case "brewer":
-          this.beerPrice++;
+          this.$store.commit('increaseBeerPrice');
           break;
         case "bard":
-          setInterval(this.gameLoop, pricesAndTicks.bardTicks);
-
+          setInterval(this.gameLoop, this.getState.bardTicks);
             break;
         default:
         // code block
@@ -161,9 +178,6 @@ export default {
 .tavern-container {
 
   color: white;
-  .sell-beer-button {
-    /* margin-top: 10px; */
-  }
   .text-container {
     /* display: flex;
     flex-direction: column; */

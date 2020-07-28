@@ -8,7 +8,7 @@
         :coins="coins"
         name="Bard"
       >
-      New furniture to the tavern attracts more customers! (increase beer prize by 1)
+      Carl the Carpenter offers new stylish benches and tables of the finest oak (increase beer prize by 1)
       </UpgradeButton>
     </div>
   </div>
