@@ -20,7 +20,7 @@
           v-if="getState.coins >= 5 | getState.tmaidData.count > 0"
           :coins="getState.coins"
           name="Tavern Maiden"
-          title="A young maiden from a nearby town asks if you need help in the tavern."
+          title="A young maiden from a nearby town asks if you need help in the tavern. (Each maid sells 1 beer every third second)"
           v-on:purchased="buy(getState.tmaidData)"
         ></purchaseButton>
       </transition>
@@ -31,7 +31,7 @@
           v-if="getState.tmaidData.count > 0"
           :coins="getState.coins"
           name="Brewer"
-          title="A weary traveller offers to teach his peoples ways of brewing and aid you in making your own fine beer."
+          title="A weary traveller offers to teach his peoples ways of brewing and aid you in making your own Tavern Inc. beer. (Increases the price of a beer by 2)"
           v-on:purchased="buy(getState.brewerData)"
         ></purchaseButton>
       </transition>
@@ -41,7 +41,7 @@
           v-if="getState.brewerData.count > 0"
           :coins="getState.coins"
           name="Bard"
-          title="The expanding inn attracts a bard from a nearby town. He offers to sing and dance, making your customers even happier"
+          title="The expanding inn attracts a bard from a nearby town. He offers to sing and dance, making your customers even happier! (The tavern sells 2 more beers pr second)"
           v-on:purchased="buy(getState.bardData)"
         ></purchaseButton>
       </transition>
@@ -59,23 +59,10 @@ import PurchaseButton from "../components/PurchaseButton.vue";
 import { mapGetters } from 'vuex'
 
 // import EventBus from "../main.js"
-const dev = true;
 
-let pricesAndTicks = {
-  coins: 0,
-  beerCost: 1,
-  tmaidPrice: dev ? 10 : 30,
-  tmaidTicks: dev ? 1000 : 3000,
-  brewerPrice: dev ? 10 : 100,
-  bardPrice: dev ? 100 : 500,
-  bardTicks: dev ? 100 : 500
-};
-
-console.log(pricesAndTicks);
 export default {
   name: "TavernBody",
   components: {
-    // Brewery,
     PurchaseButton
   },
   computed: {
@@ -87,54 +74,17 @@ export default {
             // ...
     ])
   },
-  // data() {
-  //   // return 
-  //   //   // this.$store.state;
-  //   //   store.getters.doneTodos
-  //     // soldBeer: 0,
-  //     // beerPrice: this.$store.state.beerPrice,
-  //     // coins: this.$store.state.coins,
-  //     // tmaidData: {
-  //     //   price: this.$store.state.tmaidPrice,
-  //     //   count: 0,
-  //     //   name: "tmaid"
-  //     // },
-  //     // brewerData: {
-  //     //   price: pricesAndTicks.brewerPrice,
-  //     //   count: 0,
-  //     //   name: "brewer"
-  //     // },
-  //     // bardData: {
-  //     //   price: pricesAndTicks.bardPrice,
-  //     //   count: 0,
-  //     //   name: "bard"
-  //     // }
-    
-  // },
+
   methods: {
     test() {
       console.log("test method");
     },
-    // beerPrices() {
-    //   console.log('jaaa',this.beerPrice )
-    //   this.beerPrice += 1
-    // },
-    sellBeer(costs) {
-      // let costs = this.getState.beerPrice;
-      this.coinCounter(costs);
-      // this.emitMethod();
+    sellBeer() {
+      this.coinCounter(this.getState.beerPrice);
       this.$store.commit('incrementBeers');
-      // this.$store.commit('countCoins');
-
-      // return this.getState.soldBeer++;
     },
     coinCounter(costs) {
-      // this.getState.coins += costs;
-      // this.$globalcoins = this.coins;
       this.$store.commit('countCoins', costs);
-      
-      console.log(this.$store.state.coins)
-      // return (this.coins += costs);
     },
     buy(item) {
       console.log(item.name);
@@ -146,20 +96,22 @@ export default {
       console.log(item.count);
       switch (item.name) {
         case "tmaid":
-          setInterval(this.gameLoop, this.getState.tmaidTicks);
+          this.$store.commit('incrementItem', 'tmaidData.count++');
+          // setInterval(this.gameLoop, this.getState.tmaidTicks);
           break;
         case "brewer":
-          this.$store.commit('increaseBeerPrice');
+          // this.$store.commit('increaseBeerPrice');
+          this.$store.commit('incrementItem', 'beerPrice++');
           break;
         case "bard":
-          setInterval(this.gameLoop, this.getState.bardTicks);
+          // setInterval(this.gameLoop, this.getState.bardTicks);
             break;
         default:
         // code block
       }
     },
     gameLoop() {
-      this.sellBeer();
+      // this.sellBeer();
     }, 
     emitMethod () {
       //  EventBus.$emit('COINS', this.coins);

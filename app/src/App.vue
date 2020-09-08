@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div class="app-navigation">
+      <StartOver />
       <router-link to="/">Go to your tavern</router-link>
       <router-link to="/Upgrades">Go to upgrades</router-link>
 
@@ -19,11 +20,12 @@
 // import TavernBody from "./components/TavernBody.vue";
 import House from "./components/House.vue";
 import Version from "./components/Version.vue";
+import StartOver from "./components/StartOver.vue";
 
 export default {
   name: "App",
   components: {
-    House, Version
+    House, Version, StartOver
   }
 };
 </script>
