@@ -8,6 +8,7 @@
       v-on:click="buy('brewery')"
     >Start a small brewery (Costs {{breweryPrice}}) in the corner of your tavern cellar</button> -->
   </div>
+
 </template>
 
 <script>

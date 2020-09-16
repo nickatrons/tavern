@@ -27,11 +27,11 @@ export default {
 };
 </script>
 
-<style  lang=scss>
+<style lang=scss>
 .item-container {
   border-bottom: 1px solid;
   border-color: grey;
-
+  font-size: smaller;
   padding: 20px;
   .buttoncontainer {
     display: flex;
@@ -40,12 +40,14 @@ export default {
     button {
       margin: 5px;
       padding: 5px;
-      font-size: 13px;
+      font-size: 11px;
       font-family: monospace;
       background: lightgrey;
       max-width: 50vw;
           @media (max-width: 600px) { 
-      font-size: 11px;
+    }
+    .button-description {
+      align-self: center;
     }
     }
   }

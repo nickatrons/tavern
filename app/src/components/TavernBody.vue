@@ -6,46 +6,61 @@
       >The nights are long and cold. You take in familiar and stranger alike, and pour them one for the dark nights</span>
     </div>
     <div class="tavern-buttons">
-      <button
+      <!-- <button
         class="tavern-button sell-beer-button"
         v-on:click="sellBeer"
-      >Pour a beer (Pays {{getState.beerPrice}})</button>
+      >Pour a beer (Pays {{getState.beerPrice}})</button>-->
+      <div class="tavern-guests">
+        <span class="guests-text">Guests will frequent your tavern</span>
+        <span class="guests">
+          There's {{getState.guests}} guest<span v-if="getState.guests > 1">s</span> in your tavern waiting for service.
+        </span>
+        <span class="guests">There's room for {{getState.maxGuests}} guests.</span>
+      </div>
+      <div class="pour-beer-container">
+        <span>Pour a beer (Pays {{getState.beerPrice}})</span>
+        <Beerbutton v-on:sellBeer="sellBeer()" />
+      </div>
+
       <div class="tavern-stats">
-        <span class="tavern-text">{{getState.coins}} coins in your chest</span>
+        <span class="tavern-text">
+          {{getState.coins}} coin<span v-if="getState.coins > 1">s</span> in your chest
+        </span>
         <span class="tavern-text">{{getState.soldBeer}} beers sold</span>
       </div>
-      <transition name="fade">
-        <purchaseButton
-          :buttonData="getState.tmaidData"
-          v-if="getState.coins >= 5 | getState.tmaidData.count > 0"
-          :coins="getState.coins"
-          name="Tavern Maiden"
-          title="A young maiden from a nearby town asks if you need help in the tavern."
-          v-on:purchased="buy(getState.tmaidData)"
-        ></purchaseButton>
-      </transition>
-
-      <transition name="fade">
-        <purchaseButton
-          :buttonData="getState.brewerData"
-          v-if="getState.tmaidData.count > 0"
-          :coins="getState.coins"
-          name="Brewer"
-          title="A weary traveller offers to teach his peoples ways of brewing and aid you in making your own fine beer."
-          v-on:purchased="buy(getState.brewerData)"
-        ></purchaseButton>
-      </transition>
-      <transition name="fade">
-        <purchaseButton
-          :buttonData="getState.bardData"
-          v-if="getState.brewerData.count > 0"
-          :coins="getState.coins"
-          name="Bard"
-          title="The expanding inn attracts a bard from a nearby town. He offers to sing and dance, making your customers even happier"
-          v-on:purchased="buy(getState.bardData)"
-        ></purchaseButton>
-      </transition>
     </div>
+
+    <transition name="fade">
+      <purchaseButton
+        :buttonData="getState.tmaidData"
+        v-if="getState.coins >= 5 | getState.tmaidData.count > 0"
+        :coins="getState.coins"
+        name="Tavern Maiden"
+        title="A young maiden from a nearby town asks if you need help in the tavern. (Each maid sells 1 beer every third second)"
+        v-on:purchased="buy(getState.tmaidData)"
+      ></purchaseButton>
+    </transition>
+
+    <transition name="fade">
+      <purchaseButton
+        :buttonData="getState.brewerData"
+        v-if="getState.tmaidData.count > 0"
+        :coins="getState.coins"
+        name="Brewer"
+        title="A weary traveller offers to teach his peoples ways of brewing and aid you in making your own Tavern Inc. beer. (Increases the price of a beer by 2)"
+        v-on:purchased="buy(getState.brewerData)"
+      ></purchaseButton>
+    </transition>
+    <transition name="fade">
+      <purchaseButton
+        :buttonData="getState.bardData"
+        v-if="getState.brewerData.count > 0"
+        :coins="getState.coins"
+        name="Bard"
+        title="The expanding inn attracts a bard from a nearby town. He offers to sing and dance, making your customers even happier! (The tavern sells 2 more beers pr second)"
+        v-on:purchased="buy(getState.bardData)"
+      ></purchaseButton>
+    </transition>
     <!-- <div class="tavern-stats">
       <span class="tavern-text" v-if="coins">{{coins}} coins in your chest</span>
       <span class="tavern-text" v-if="tmaid">{{tmaid}} tavern maidens in your tavern</span>
@@ -56,116 +71,63 @@
 <script>
 // import Brewery from '../components/items/Brewery.vue'
 import PurchaseButton from "../components/PurchaseButton.vue";
-import { mapGetters } from 'vuex'
+import Beerbutton from "../components/tavern/Beerbutton.vue";
+import { mapGetters } from "vuex";
 
 // import EventBus from "../main.js"
-const dev = true;
 
-let pricesAndTicks = {
-  coins: 0,
-  beerCost: 1,
-  tmaidPrice: dev ? 10 : 30,
-  tmaidTicks: dev ? 1000 : 3000,
-  brewerPrice: dev ? 10 : 100,
-  bardPrice: dev ? 100 : 500,
-  bardTicks: dev ? 100 : 500
-};
-
-console.log(pricesAndTicks);
 export default {
   name: "TavernBody",
   components: {
-    // Brewery,
-    PurchaseButton
+    PurchaseButton,
+    Beerbutton
   },
   computed: {
-    storedData() {
-      return this.$store.getters.getState; 
-    },
+    // storedData() {
+    //   return this.$store.getters.getState;
+    // },
     ...mapGetters([
-      'getState',
-            // ...
+      "getState"
+      // ...
     ])
   },
-  // data() {
-  //   // return 
-  //   //   // this.$store.state;
-  //   //   store.getters.doneTodos
-  //     // soldBeer: 0,
-  //     // beerPrice: this.$store.state.beerPrice,
-  //     // coins: this.$store.state.coins,
-  //     // tmaidData: {
-  //     //   price: this.$store.state.tmaidPrice,
-  //     //   count: 0,
-  //     //   name: "tmaid"
-  //     // },
-  //     // brewerData: {
-  //     //   price: pricesAndTicks.brewerPrice,
-  //     //   count: 0,
-  //     //   name: "brewer"
-  //     // },
-  //     // bardData: {
-  //     //   price: pricesAndTicks.bardPrice,
-  //     //   count: 0,
-  //     //   name: "bard"
-  //     // }
-    
-  // },
-  methods: {
-    test() {
-      console.log("test method");
-    },
-    // beerPrices() {
-    //   console.log('jaaa',this.beerPrice )
-    //   this.beerPrice += 1
-    // },
-    sellBeer(costs) {
-      // let costs = this.getState.beerPrice;
-      this.coinCounter(costs);
-      // this.emitMethod();
-      this.$store.commit('incrementBeers');
-      // this.$store.commit('countCoins');
 
-      // return this.getState.soldBeer++;
-    },
-    coinCounter(costs) {
-      // this.getState.coins += costs;
-      // this.$globalcoins = this.coins;
-      this.$store.commit('countCoins', costs);
-      
-      console.log(this.$store.state.coins)
-      // return (this.coins += costs);
+  methods: {
+    sellBeer() {
+      // this.coinCounter(this.getState.beerPrice);
+      this.$store.commit("incrementBeers");
+      // this.$store.commit("incrementCoins");
     },
     buy(item) {
-      console.log(item.name);
-      item.count++;
-      this.coinCounter(-item.price);
-      item.price += Math.round(item.price * 1.15);
-      this.$store.commit('increasePrices', item.name);
+      this.$store.commit("autoSeller");
 
       console.log(item.count);
       switch (item.name) {
         case "tmaid":
-          setInterval(this.gameLoop, this.getState.tmaidTicks);
+          this.$store.commit("incrementItem", "tmaidData");
           break;
         case "brewer":
-          this.$store.commit('increaseBeerPrice');
+          this.$store.commit("increaseBeerPrices");
+          this.$store.commit("incrementItem", "brewer");
           break;
         case "bard":
-          setInterval(this.gameLoop, this.getState.bardTicks);
-            break;
+          // setInterval(this.gameLoop, this.getState.bardTicks);
+          break;
         default:
         // code block
       }
     },
     gameLoop() {
-      this.sellBeer();
-    }, 
-    emitMethod () {
+      // this.sellBeer();
+    },
+    emitMethod() {
       //  EventBus.$emit('COINS', this.coins);
     }
   },
-  mounted() {}
+  mounted() {},
+  destroyed() {
+    console.log('hejsa')
+  }
 };
 </script>
 
@@ -176,13 +138,9 @@ export default {
   align-items: center;
 }
 .tavern-container {
-
   color: white;
   .text-container {
-    /* display: flex;
-    flex-direction: column; */
     margin: 20px 80px;
-
     .tavern-text {
       color: white;
       margin: 20px;
@@ -194,12 +152,27 @@ export default {
   }
   .tavern-buttons {
     margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 0 20px 0 20px;
+
     button {
       margin: 5px;
       padding: 5px;
       font-size: 13px;
       font-family: monospace;
       background: lightgrey;
+    }
+    .pour-beer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tavern-guests,
+    .tavern-stats {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
     }
     .button-description {
       /* @include flexBoxStd; */
