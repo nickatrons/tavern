@@ -46,6 +46,9 @@ export default {
       max-width: 50vw;
           @media (max-width: 600px) { 
     }
+    .button-description {
+      align-self: center;
+    }
     }
   }
   .tavern-text {
